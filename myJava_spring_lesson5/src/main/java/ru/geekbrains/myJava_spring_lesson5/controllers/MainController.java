@@ -12,11 +12,6 @@ import java.util.Map;
 @RequestMapping("/")
 public class MainController {
 
-//    @GetMapping
-//    public String main(){
-//        return "index";
-//    }
-
     @GetMapping
     public String main(
             Model model

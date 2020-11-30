@@ -18,5 +18,8 @@ public class OrderSpecification {
         return (Specification<Order>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("code"), String.format("%%%s%%", codePart)); // where o.code like %codePart%
     }
 
+    public static Specification<Order> nameLike(String namePart) {
+        return (Specification<Order>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.like(root.get("customer").get("name"), String.format("%%%s%%", namePart));
+    }
 
 }

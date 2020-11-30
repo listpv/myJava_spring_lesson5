@@ -2,10 +2,7 @@ package ru.geekbrains.myJava_spring_lesson5.utils;
 
 import org.springframework.data.jpa.domain.Specification;
 import ru.geekbrains.myJava_spring_lesson5.entities.Order;
-import ru.geekbrains.myJava_spring_lesson5.entities.Product;
-import ru.geekbrains.myJava_spring_lesson5.repositories.OrderRepository;
 import ru.geekbrains.myJava_spring_lesson5.repositories.specifications.OrderSpecification;
-import ru.geekbrains.myJava_spring_lesson5.repositories.specifications.ProductSpecifications;
 
 import java.util.Map;
 
@@ -25,6 +22,14 @@ public class OrderFilter {
             filterDefinitionBuilder.append("&code=").append(filterCode);
         }
 
+        String filterName = params.get("customerName");
+
+        if(filterName != null && !filterName.isEmpty()){
+            spec = spec.and(OrderSpecification.nameLike(filterName));
+            filterDefinitionBuilder.append("&customerName=").append(filterName);
+        }
+
+
         if (params.containsKey("min_price") && !params.get("min_price").isEmpty()) {
             Integer minPrice = Integer.parseInt(params.get("min_price"));
             spec = spec.and(OrderSpecification.currentPriceGreaterOrEqualsThan(minPrice));
@@ -38,6 +43,8 @@ public class OrderFilter {
         }
 
         filterDefinition = filterDefinitionBuilder.toString();
+
+        System.out.println(filterDefinition);
     }
 
     public Specification<Order> getSpec() {
