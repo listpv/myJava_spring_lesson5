@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Каталог товаров</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <div th:replace="~{fragments/navigation :: navigation(Orders)}" />
+
+    <h3>Фильтр</h3>
+    <form method="get" th:action="@{/orders}">
+        <div class="form-group col-md-6">
+            <label for="codeInput">Код заказа</label>
+            <input class="form-control" th:value="${param.code != null ? param.code : null}" name="code" type="text" id="codeInput">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="minPriceInput">Минимальная цена</label>
+            <input class="form-control" th:value="${param.min_price != null ? param.min_price : null}" name="min_price" type="number" id="minPriceInput">
+        </div>
+        <div class="form-group col-md-6">
+            <label for="maxPriceInput">Максимальная цена</label>
+            <input class="form-control" th:value="${param.max_price != null ? param.max_price : null}" name="max_price" type="number" id="maxPriceInput">
+        </div>
+
+        <button class="btn btn-primary" type="submit">Применить</button>
+        <a class="btn btn-primary" th:href="@{/orders}">Очистить фильтр</a>
+        <a class="btn btn-primary" th:href="@{/products/add}">Добавить новый товар</a>
+    </form>
+
+
+    <h1>Список заказов</h1>
+    <table class="table table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Код заказ</th>
+            <th>Клиент</th>
+            <th>Товар</th>
+            <th>Цена</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${orders}">
+            <td th:text="${o.id}"/>
+            <td th:text="${o.code}"/>
+            <td th:text="${o.customer.name}"/>
+            <td th:text="${o.product.title}"/>
+            <td th:text="${o.currentPrice}"/>
+        </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${orders.isFirst() ? 'disabled' : ''}">
+                <a class="page-link"
+                   th:href="@{'/orders?o=' + ${orders.previousOrFirstPageable().getPageNumber() + 1} + ${filterDefinition}}">Назад</a>
+            </li>
+
+            <li class="page-item" th:classappend="${orders.getNumber() + 1 == i ? 'active' : ''}"
+                th:each="i : ${#numbers.sequence(1, orders.getTotalPages())}">
+                <a class="page-link" th:text="${i}" th:href="@{'/orders?o=' + ${i} + ${filterDefinition}}"></a>
+            </li>
+
+            <li class="page-item"  th:classappend="${orders.isLast() ? 'disabled' : ''}">
+                <a class="page-link"
+                   th:href="@{'/orders?o='+ ${orders.nextOrLastPageable().getPageNumber() + 1} + ${filterDefinition}}">Вперед</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+</body>
+</html>
